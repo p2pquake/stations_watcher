@@ -20,9 +20,10 @@ type SeismicIntensityStation struct {
 	Affi string    `json:"affi"`
 }
 
-// StringNum accepts either a JSON string or number, rounds to 3 decimal
-// places, and stores the result as a minimal-digit string. Rounding fixes
-// float-precision artifacts in the upstream feed (e.g. 131.23499999...).
+// StringNum accepts either a JSON string or number, rounds to 2 decimal
+// places, and stores the result as a fixed 2-decimal string (with trailing
+// zeros). Rounding fixes float-precision artifacts in the upstream feed
+// (e.g. 131.23499999...).
 type StringNum string
 
 func (s *StringNum) UnmarshalJSON(data []byte) error {
@@ -42,12 +43,12 @@ func (s *StringNum) UnmarshalJSON(data []byte) error {
 	} else if err := json.Unmarshal(data, &f); err != nil {
 		return err
 	}
-	*s = StringNum(strconv.FormatFloat(round3(f), 'f', -1, 64))
+	*s = StringNum(strconv.FormatFloat(round2(f), 'f', 2, 64))
 	return nil
 }
 
-func round3(f float64) float64 {
-	return math.Round(f*1000) / 1000
+func round2(f float64) float64 {
+	return math.Round(f*100) / 100
 }
 
 func (s StringNum) MarshalJSON() ([]byte, error) {

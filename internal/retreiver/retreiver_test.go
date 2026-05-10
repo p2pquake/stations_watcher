@@ -11,13 +11,13 @@ func TestStringNumRounding(t *testing.T) {
 		in   string
 		want string
 	}{
-		{"float artifact rounds up", `131.23499999999999`, "131.235"},
+		{"float artifact rounds down", `131.23499999999999`, "131.23"},
 		{"already short float", `43.17`, "43.17"},
 		{"string number", `"141.32"`, "141.32"},
-		{"string with float artifact", `"131.23499999999999"`, "131.235"},
-		{"integer float", `35`, "35"},
-		{"negative float", `-0.0004`, "-0"},
-		{"rounds half away from zero", `1.2345`, "1.235"},
+		{"string with float artifact", `"131.23499999999999"`, "131.23"},
+		{"integer float", `35`, "35.00"},
+		{"negative float", `-0.0004`, "-0.00"},
+		{"rounds half away from zero", `1.235`, "1.24"},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -41,7 +41,7 @@ func TestStationUnmarshal(t *testing.T) {
 	if string(stations[0].Lat) != "43.17" {
 		t.Fatalf("lat: %q", stations[0].Lat)
 	}
-	if string(stations[0].Lon) != "131.235" {
+	if string(stations[0].Lon) != "131.23" {
 		t.Fatalf("lon: %q", stations[0].Lon)
 	}
 }
